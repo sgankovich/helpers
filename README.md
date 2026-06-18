@@ -58,6 +58,7 @@ Reusable code blocks organized by language/framework.
 
 | Script Group | Description |
 |--------------|-------------|
+| [ecs-list-service-images](scripts/ecs-list-service-images/) | List ECS services and their container image tags |
 | [gitlab-manage-project-vars](scripts/gitlab-manage-project-vars/) | Export/import GitLab CI/CD variables |
 | [s3-restore](scripts/s3-restore/) | S3 backup restoration utilities |
 
