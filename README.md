@@ -1,92 +1,41 @@
-# 🚀 Helpers
+# Helpers
 
-> A curated collection of scripts, memos, and code snippets for daily development workflows.
-
----
-
-## 📂 Contents
-
-| Directory | Purpose | Format |
-|-----------|---------|--------|
-| **[scripts/](scripts/)** | Reusable scripts and tools | `.sh`, `.py`, or subdirectory with README |
-| **[memos/](memos/)** | Command references and cheat sheets | `.md` |
-| **[snippets/](snippets/)** | Reusable code templates | Organized by language |
+A curated collection of reusable scripts, memos, code snippets, and AI resources for daily development workflows.
 
 ---
 
-## 🛠️ Usage
+## Contents
 
-### Scripts
-Scripts can be organized as standalone files or in subdirectories with their own documentation.
+| Directory | Purpose |
+|-----------|---------|
+| **[scripts/](scripts/)** | Executable automation tools. Each group has its own subdirectory and `README.md`. |
+| **[ai/](ai/)** | Prompts, skills, and other AI-related resources. |
+| **[memos/](memos/)** | Quick-reference guides and cheat sheets. |
+| **[snippets/](snippets/)** | Reusable code fragments organized by language. |
+
+## Script groups
+
+| Group | Description |
+|-------|-------------|
+| [gitlab-vars](scripts/gitlab-vars/) | Export and import GitLab CI/CD variables. |
+| [s3-restore](scripts/s3-restore/) | Bulk restore and status checking for archived S3 objects. |
+
+## Usage
+
+Most scripts can be run directly after cloning. Check each group's `README.md` for prerequisites and examples.
 
 ```bash
-# Run a standalone script
-./scripts/<script-name>.sh
-
-# Or navigate to script directory
-cd scripts/<script-group>/
-./<script-name>.sh  # or .py for Python scripts
+# Example: export GitLab CI/CD variables
+cd scripts/gitlab-vars/
+./export_variables.sh <group_id> [output_file]
+# or
+python export_variables.py --group-id <group_id> --output variables.json
 ```
 
-Each script directory contains a `README.md` with usage details.
+## Contributing
 
-### Memos
-Quick-reference guides for common commands and workflows.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-### Snippets
-Reusable code blocks organized by language/framework.
+## License
 
----
-
-## 📥 Adding Content
-
-| Type | Location | Format |
-|------|----------|--------|
-| Script | `scripts/` | Executable files or subdirectory with README |
-| Memo | `memos/` | Markdown files (`.md`) |
-| Snippet | `snippets/<language>/` | Code files with descriptive names |
-
-**Best practices:**
-- Include a `README.md` for script groups explaining purpose and usage
-- Use descriptive, verb-based names for scripts (e.g., `export_variables.sh`)
-- Add a header comment with usage examples in scripts
-- Keep memos concise and action-oriented
-
----
-
-## 📊 Current Scripts
-
-| Script Group | Description |
-|--------------|-------------|
-| [gitlab-manage-project-vars](scripts/gitlab-manage-project-vars/) | Export/import GitLab CI/CD variables |
-| [s3-restore](scripts/s3-restore/) | S3 backup restoration utilities |
-
----
-
-## 🤝 Contributing
-
-1. **Create a feature branch** from `main`
-2. **Add your content** following the structure above
-3. **Test your scripts** before committing
-4. **Use descriptive commit messages**
-5. **Open a PR** for review
-
----
-
-## 📁 Structure
-
-```
-helpers/
-├── README.md                    # This file
-├── scripts/
-│   ├── <script-name>.sh         # Standalone scripts
-│   └── <script-group>/          # Script collections
-│       ├── README.md           # Group documentation
-│       ├── *.sh                # Shell scripts
-│       └── *.py                # Python scripts
-├── memos/
-│   └── <topic>.md              # Cheat sheets
-└── snippets/
-    └── <language>/
-        └── <name>.<ext>        # Code snippets
-```
+[MIT](LICENSE)
