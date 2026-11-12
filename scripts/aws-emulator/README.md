@@ -29,7 +29,7 @@ emu-help
 | `emu-tf <args>` | Run `terraform <args>` against the emulator in the current directory (requires `*.tf`). |
 | `emu-tf-clear` | Remove `terraform.tfstate*` in the current directory. |
 | `emu-stop` | Stop the emulator (all state is lost, it lives in memory only). |
-| `emu-help` | Detailed instructions (Belarusian). |
+| `emu-help` | Detailed instructions. |
 
 ## Typical flow
 

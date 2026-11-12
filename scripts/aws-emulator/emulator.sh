@@ -87,8 +87,8 @@ emu-off() {
 # Run terraform against the emulator in the CURRENT directory (isolated subshell).
 emu-tf() {
   if ! ls ./*.tf >/dev/null 2>&1; then
-    echo "emu-tf: у бягучым каталогу ($PWD) няма *.tf файлаў." >&2
-    echo "Перайдзіце ў каталог з terraform-кодам і паўтарыце." >&2
+    echo "emu-tf: no *.tf files in the current directory ($PWD)." >&2
+    echo "cd into a directory with Terraform code and try again." >&2
     return 1
   fi
   ( emu-env >/dev/null && terraform "$@" )
@@ -97,7 +97,7 @@ emu-tf() {
 # Remove local terraform state in the CURRENT directory (use after emu-stop / restart).
 emu-tf-clear() {
   if ! ls ./*.tf >/dev/null 2>&1; then
-    echo "emu-tf-clear: у бягучым каталогу ($PWD) няма *.tf файлаў." >&2
+    echo "emu-tf-clear: no *.tf files in the current directory ($PWD)." >&2
     return 1
   fi
   rm -f terraform.tfstate terraform.tfstate.backup && echo "tf state cleared"
@@ -121,52 +121,52 @@ emu-status() {
 
 emu-help() {
   cat <<'HELP'
-AWS Emulator — інструкцыя (лакальны эмулятар AWS у Docker, порт 9297)
+AWS Emulator - instructions (local AWS emulator in Docker, port 9297)
 
-КАМАНДЫ
-  emu-build       Збірае вобраз (Dockerfile убудаваны). Аргументы: --pull --no-cache для абнаўлення.
-  emu-start       Запускае кантэйнер (калі няма вобраза — спачатку збірае яго сам) і чакае гатоўнасці.
-  emu-status      Паказвае стан кантэйнера, health-check і ці падлучаны гэты тэрмінал.
-  emu-env         Падключае ЦЯПЕРАШНІ тэрмінал да эмулятара (aws, terraform, SDK).
-                  Друкуе нумар акаўнта: павінен быць 000000000000.
-  emu-off         Адключае тэрмінал ад эмулятара (вяртае звычайны AWS).
-  emu-tf <args>   Запускае `terraform <args>` у БЯГУЧЫМ каталогу (дзе ёсць *.tf)
-                  супраць эмулятара; інакш паказвае памылку. Тэрмінал застаецца чыстым.
-  emu-tf-clear    Выдаляе terraform.tfstate* у БЯГУЧЫМ каталогу.
-  emu-stop        Спыняе эмулятар. УСЕ даныя губляюцца (захоўваюцца толькі ў памяці).
-  emu-help        Гэтая даведка.
+COMMANDS
+  emu-build       Build the image (Dockerfile is embedded). Use --pull --no-cache to update.
+  emu-start       Start the container (builds the image first if missing) and wait until healthy.
+  emu-status      Show container state, health, and whether this shell is connected.
+  emu-env         Connect the CURRENT shell to the emulator (aws, terraform, SDKs).
+                  Prints the account id: must be 000000000000.
+  emu-off         Disconnect this shell from the emulator (back to normal AWS).
+  emu-tf <args>   Run `terraform <args>` in the CURRENT directory (must contain *.tf)
+                  against the emulator; otherwise prints an error. The shell stays clean.
+  emu-tf-clear    Remove terraform.tfstate* in the CURRENT directory.
+  emu-stop        Stop the emulator. ALL data is lost (it lives in memory only).
+  emu-help        This help.
 
-ТЫПАВЫ ПРАЦЭС
+TYPICAL FLOW
   emu-start
-  cd <каталог з *.tf>
+  cd <directory with *.tf>
   emu-tf init
   emu-tf plan
   emu-tf apply -auto-approve
   emu-env && aws s3 ls
-  emu-tf destroy -auto-approve    # па жаданні
+  emu-tf destroy -auto-approve    # optional
   emu-off
   emu-stop
-  emu-tf-clear                    # абавязкова перад наступным запускам
+  emu-tf-clear                    # required before the next start
 
-ВАЖНА
-  * Без emu-env (або emu-tf) каманды aws ідуць у РЭАЛЬНЫ AWS. Заўсёды правярайце:
-    `aws sts get-caller-identity` павінен паказаць акаўнт 000000000000.
-    Калі іншы — неадкладна спыніцеся і запусціце emu-off, потым emu-env.
-  * Пасля emu-stop стан эмулятара пусты, таму ВЫДАЛІЦЕ state праз emu-tf-clear,
-    інакш terraform будзе думаць, што рэсурсы яшчэ існуюць.
-  * Эмулятар слухае толькі 127.0.0.1. Не публікуйце порт на ўсіх інтэрфейсах.
-  * Не выкарыстоўвайце прадакшн-даныя і не адключайце праверку TLS.
-  * Адзін рэгіён (us-east-1) і адзін акаўнт на адзін эмулятар.
-  * Праверка IAM-палітык, bucket policy і KMS key policy на эмулятары не працуе.
-  * Іншы порт: EMU_PORT=9300 перад source (порт перадаецца эмулятару аўтаматычна).
+IMPORTANT
+  * Without emu-env (or emu-tf) aws commands go to REAL AWS. Always check:
+    `aws sts get-caller-identity` must show account 000000000000.
+    If it shows another account, stop immediately, run emu-off, then emu-env.
+  * After emu-stop the emulator state is empty, so run emu-tf-clear, otherwise
+    terraform will think the resources still exist.
+  * The emulator listens on 127.0.0.1 only. Never publish the port on all interfaces.
+  * Do not use production data and do not disable TLS verification.
+  * One Region (us-east-1) and one account per emulator.
+  * IAM policies, bucket policies and KMS key policies cannot be tested on the emulator.
+  * Another port: set EMU_PORT=9300 before sourcing (the port is passed to the emulator automatically).
 
-ЧАСТЫЯ ПРАБЛЕМЫ
-  "Docker is not running"        Запусціце Docker Desktop.
-  Порт 9297 заняты               Праверце: lsof -i :9297 ; або emu-stop.
-  TLS / certificate error        Сертыфікат новы пры кожным старце: зрабіце emu-env нанова.
-  BucketAlreadyExists            Бакет застаўся ад ранейшага запуску: emu-stop, emu-start, emu-tf-clear.
-  Памылка s3control / 000000000000.127.0.0.1
-                                 Выкарыстоўвайце AWS-правайдар ~> 5.100 (у 6.x ён не працуе з эмулятарам).
-  EC2 / SSM / CloudFormation     Пакрыццё частковае: DescribeTags і некаторыя аперацыі вяртаюць 501 NotImplemented.
+TROUBLESHOOTING
+  "Docker is not running"        Start Docker Desktop.
+  Port 9297 is busy              Check: lsof -i :9297 ; or run emu-stop.
+  TLS / certificate error        The certificate is new on every start: run emu-env again.
+  BucketAlreadyExists            Bucket left from a previous run: emu-stop, emu-start, emu-tf-clear.
+  s3control / 000000000000.127.0.0.1 error
+                                 Use AWS provider ~> 5.100 (6.x does not work with the emulator).
+  EC2 / SSM / CloudFormation     Coverage is partial: DescribeTags and some operations return 501 NotImplemented.
 HELP
 }
