@@ -17,6 +17,7 @@ A curated collection of reusable scripts, memos, code snippets, and AI resources
 
 | Group | Description |
 |-------|-------------|
+| [aws-emulator](scripts/aws-emulator/) | Shell helpers to run AWS Emulator in Docker and use it with the AWS CLI / Terraform. |
 | [gitlab-vars](scripts/gitlab-vars/) | Export and import GitLab CI/CD variables. |
 | [s3-restore](scripts/s3-restore/) | Bulk restore and status checking for archived S3 objects. |
 
